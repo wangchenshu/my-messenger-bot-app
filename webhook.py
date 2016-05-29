@@ -53,14 +53,22 @@ class WebhookHandler(tornado.web.RequestHandler):
             
             print(send_data)
             #data = urllib.urlencode(send_data)
-            
-            send_message_response = yield http_client.fetch(
-                HTTPRequest("https://graph.facebook.com/v2.6/me/messages", 'POST', headers, body=json.dumps(send_data))
-            )
 
-            if send_message_response.error:
-                print "Error:", send_message_response.error
-            else:
-                print 'send_message_response: ' + send_message_response.body
-                        
+            try:
+                send_message_response = yield http_client.fetch(
+                    HTTPRequest("https://graph.facebook.com/v2.6/me/messages", 'POST', headers, body=json.dumps(send_data))
+                )
+
+                if send_message_response.error:
+                    print "Error:", send_message_response.error
+
+                else:
+                    print 'send_message_response: ' + send_message_response.body
+
+            except tornado.httpclient.HTTPError as e:
+                print("ex: " + str(e))
+
+            except Exception as e:
+                print("Error: " + str(e))
+
             self.write("200")
