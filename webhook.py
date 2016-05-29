@@ -25,19 +25,17 @@ class WebhookHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def post(self):
         request_dict = json.loads(self.request.body)
-
-        print(request_dict["entry"][0]["messaging"])
+        #print(request_dict["entry"][0]["messaging"])
 
         messaging_events = request_dict["entry"][0]["messaging"]
         http_client = AsyncHTTPClient()
         
         for event in messaging_events:
-            print(event["sender"]["id"])
+            #print(event["sender"]["id"])
             if event["message"] and event["message"]["text"]:
                 content_text = event["message"]["text"]
                 print content_text
 
-                #print(options.access_token)
                 headers = { 
                     'Content-Type': 'application/json'
                    }        
@@ -60,17 +58,15 @@ class WebhookHandler(tornado.web.RequestHandler):
                     send_text = message.send_text["contact_us"]
 
                 send_data = {
-                    'access_token': options.access_token,
                     "recipient": {
                         "id": event["sender"]["id"]
                     },
                     "message": {
                         "text": send_text
                     }
-                   }
+                }
                 
-                print(send_data)
-                #data = urllib.urlencode(send_data)
+                #print(send_data)
 
                 try:
                     send_message_response = yield http_client.fetch(HTTPRequest(
