@@ -11,15 +11,9 @@ from tornado import gen
 define("verify_token", default="", help="", type=str)
 define("access_token", default="", help="", type=str)
 
-class WebhookHandler(tornado.web.RequestHandler):
-    def send_text_message(sender, text):
-        pass
-        messageData = {
-            "text": text
-        }
-                
+class WebhookHandler(tornado.web.RequestHandler):    
     def get(self):
-        print('hello: ' + self.get_query_argument("hub.verify_token"))
+        print(self.get_query_argument("hub.verify_token"))
 
         if self.get_query_argument("hub.verify_token") == options.verify_token:
             print("rec: " + self.get_query_argument("hub.challenge"))
@@ -48,31 +42,6 @@ class WebhookHandler(tornado.web.RequestHandler):
                 'access_token': options.access_token        
             }        
 
-            '''
-            send_data = {
-              "object":"page",
-              "entry":[
-                {
-                  "id": PAGE_ID,
-                  "time":1458692752478,
-                  "messaging":[
-                    {
-                      "sender":{
-                        "id":"USER_ID"
-                      },
-                      "recipient":{
-                        "id":"PAGE_ID"
-                      },
-                      "timestamp":1458692752478,
-                      "postback":{
-                        "payload":"USER_DEFINED_PAYLOAD"
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-            '''
             send_data = {
                 "recipient": {
                     "id": event["sender"]["id"]
@@ -83,7 +52,6 @@ class WebhookHandler(tornado.web.RequestHandler):
             }
             
             print(send_data)
-
             #data = urllib.urlencode(send_data)
             
             send_message_response = yield http_client.fetch(
@@ -96,4 +64,3 @@ class WebhookHandler(tornado.web.RequestHandler):
                 print 'send_message_response: ' + send_message_response.body
                         
             self.write("200")
-            break
