@@ -32,6 +32,11 @@ class WebhookHandler(tornado.web.RequestHandler):
         
         for event in messaging_events:
             #print(event["sender"]["id"])
+            print(event)
+
+            if "text" not in event["message"]:
+                continue
+
             if event["message"] and event["message"]["text"]:
                 content_text = event["message"]["text"]
                 print content_text
@@ -57,30 +62,34 @@ class WebhookHandler(tornado.web.RequestHandler):
                 elif "contact" in content_text or u"聯絡" in content_text:
                     send_text = message.send_text["contact_us"]
 
-                send_data = {
-                    "recipient": {
-                        "id": event["sender"]["id"]
-                    },
-                    "message": {
-                        "text": send_text
-                    }
-                }
+                text_message = message.create_text_message(event["sender"]["id"], send_text)
+                butten_template_message = message.create_butten_template_message(event["sender"]["id"])
                 
-                #print(send_data)
-
                 try:
-                    send_message_response = yield http_client.fetch(HTTPRequest(
-                        "https://graph.facebook.com/v2.6/me/messages?access_token=" + options.access_token,
-                        'POST',
-                        headers,
-                        body=json.dumps(send_data)
-                    ))
+                    text_message_response, butten_template_message_response = yield [
+                        http_client.fetch(
+                            HTTPRequest(
+                                "https://graph.facebook.com/v2.6/me/messages?access_token=" + options.access_token,
+                                'POST',
+                                headers,
+                                body=json.dumps(text_message)
+                            )
+                        ),
+                        http_client.fetch(
+                            HTTPRequest(
+                                "https://graph.facebook.com/me/messages?access_token=" + options.access_token,
+                                'POST',
+                                headers,
+                                body=json.dumps(butten_template_message)
+                            )
+                        )
+                    ]
 
-                    if send_message_response.error:
-                        print "Error:", send_message_response.error
+                    if text_message_response.error:
+                        print "Error:", text_message_response.error
 
                     else:
-                        print 'send_message_response: ' + send_message_response.body
+                        print 'text_message_response: ' + text_message_response.body
 
                 except tornado.httpclient.HTTPError as e:
                     print("ex: " + str(e))

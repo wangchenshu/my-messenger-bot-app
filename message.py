@@ -42,3 +42,84 @@ send_text = {
         https://www.meetup.com/hackingthursday/ ( Meetup )
     """
 }
+
+def create_text_message(sender, text):
+    return {
+        "recipient": {
+            "id": sender
+        },
+        "message": {
+            "text": text
+        }
+    }
+
+def create_generic_message(sender):
+    message_data = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": "First card",
+                    "subtitle": "Element #1 of an hscroll",
+                    "image_url": "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/11813376_842684179173214_3987034703356373870_n.jpg",
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": "https://hackingthursday.org",
+                        "title": "H4 Web url"
+                    }, {
+                        "type": "postback",
+                        "title": "Postback",
+                        "payload": "Payload for first element in a generic bubble",
+                    }],
+                  },{
+                        "title": "Second card",
+                        "subtitle": "Element #2 of an hscroll",
+                        "image_url": "https://s3-ap-northeast-1.amazonaws.com/walter-s3/line-bot/image/11813376_842684179173214_3987034703356373870_n.jpg",
+                        "buttons": [{
+                            "type": "postback",
+                            "title": "EmacsPostback",
+                            "payload": "Payload for second element in a generic bubble",
+                        }],
+                    }
+                ]
+            }
+        }
+    }
+
+    return {
+        "recipient": {
+            "id": sender
+        },
+        "message": {
+            "text": message_data
+        }
+    }
+
+def create_butten_template_message(sender):
+    return {
+        "recipient":{
+            "id": sender
+        },
+        "message":{
+            "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"button",
+                    "text":"What do you want to do next?",
+                    "buttons":[
+                        {
+                            "type":"web_url",
+                            "url":"http://www.hackingthursday.org/",
+                            "title":"H4 Website"
+                        },
+                        {
+                            "type":"postback",
+                            "title":"Start Chatting",
+                            "payload":"USER_DEFINED_PAYLOAD"
+                        }
+                    ]
+                }
+            }
+        }
+    }
