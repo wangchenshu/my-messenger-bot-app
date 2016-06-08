@@ -3,7 +3,7 @@
 facecook messenger bot
 
 ## Please install tornado first.
-> [check here](https://github.com/wangchenshu/myshare/blob/master/Tornado.org)
+> [check here](https://github.com/wangchenshu/Tornado-share/blob/master/Tornado.org)
 
 ## Configuration
 > you can create a server.conf like me.
