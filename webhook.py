@@ -9,14 +9,14 @@ from tornado.options import define, options
 from tornado import gen
 import message
 
-define("verify_token", default="", help="", type=str)
+define("verify_token2", default="", help="", type=str)
 define("access_token", default="", help="", type=str)
 
 class WebhookHandler(tornado.web.RequestHandler):    
     def get(self):
         print(self.get_query_argument("hub.verify_token"))
 
-        if self.get_query_argument("hub.verify_token") == options.verify_token:
+        if self.get_query_argument("hub.verify_token") == options.verify_token2:
             print("rec: " + self.get_query_argument("hub.challenge"))
             self.write(self.get_query_argument("hub.challenge"))
         else:

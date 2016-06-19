@@ -22,7 +22,7 @@ from webhook import WebhookHandler
 
 from tornado.options import define, options
 
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=3000, help="run on the given port", type=int)
 define("ip", default="127.0.0.1", help="run on the given ip", type=str)
 
 def main():
